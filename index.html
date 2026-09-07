@@ -200,13 +200,21 @@ textarea{resize:vertical; min-height:70px}
 .ring .rc b{font-family:"Barlow",sans-serif; font-size:30px; font-weight:800; color:var(--navy); display:block; line-height:1}
 .ring .rc span{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em}
 
-.teams{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.tcard{border:1px solid var(--line); border-radius:14px; padding:14px}
-.tname{font-family:"Barlow",sans-serif; font-weight:700; font-size:14.5px; color:var(--navy)}
-.tbig{font-family:"Barlow",sans-serif; font-weight:800; font-size:26px; color:var(--ink); margin:6px 0 8px; font-variant-numeric:tabular-nums}
-.tbig small{font-size:13px; color:var(--muted); font-weight:600}
-.trow{display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); margin-top:8px}
-.trow b{color:var(--ink)}
+.teams{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.tcard{position:relative; overflow:hidden; border:1px solid var(--line); border-top:4px solid var(--tc,var(--cyan)); border-radius:16px; padding:16px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--tc,var(--cyan)) 7%,#fff),#fff);
+  transition:transform .16s cubic-bezier(.2,.7,.3,1), box-shadow .16s}
+.tcard:hover{transform:translateY(-3px); box-shadow:0 18px 38px rgba(11,31,92,.16)}
+.thead-t{display:flex; align-items:center; justify-content:space-between; gap:8px}
+.tname{font-family:"Barlow",sans-serif; font-weight:800; font-size:14.5px; color:var(--navy); line-height:1.15}
+.rankb{flex-shrink:0; font-size:11px; font-weight:800; font-family:"Barlow",sans-serif; padding:3px 8px; border-radius:999px; background:var(--tc,var(--cyan)); color:#fff; letter-spacing:.02em}
+.tbig{font-family:"Barlow",sans-serif; font-weight:800; font-size:34px; color:var(--tc,var(--cyan)); margin:8px 0 4px; font-variant-numeric:tabular-nums; line-height:1}
+.tbig small{font-size:13px; color:var(--muted); font-weight:700}
+.tpct{font-size:12px; font-weight:700; color:var(--muted); margin-bottom:8px}
+.tstats{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px}
+.tstat{background:#fff; border:1px solid var(--line); border-radius:10px; padding:7px 4px; text-align:center}
+.tstat span{display:block; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--muted)}
+.tstat b{font-family:"Barlow",sans-serif; font-size:16px; color:var(--navy); font-variant-numeric:tabular-nums}
 .tlink{display:flex; gap:6px; margin-top:10px; flex-wrap:wrap}
 .tlink input{margin:0; padding:7px 9px; font-size:12px; border-radius:8px; flex:1 1 100%; min-width:0}
 .tlink .lnk{flex-shrink:0; padding:5px 11px}
@@ -405,11 +413,6 @@ tbody tr:last-child td{border-bottom:0}
         '<a class="door rise-2" href="#/panel"><span class="di">📊</span>'+
           '<span class="dtx"><span class="dt">Panel de seguimiento</span><span class="dd">Estadísticas y metas · requiere clave</span></span>'+
           '<span class="darr" aria-hidden="true">→</span></a>'+
-      '</div>'+
-      '<div class="stripwrap rise-3">'+
-        '<img class="strip" src="img/paradero.jpg" alt="Paradero del SETP en Ibagué" loading="lazy">'+
-        '<img class="strip" src="img/semaforo.jpg" alt="Semáforo peatonal en Ibagué" loading="lazy">'+
-        '<img class="strip" src="img/ocobos.jpg" alt="Ocobos en flor en Ibagué" loading="lazy">'+
       '</div>'+
       '<p class="foot">Área de Comunicaciones · Estrategia CULTURA SETP — “Tu comportamiento mueve la ciudad”.</p>'+
       '<p class="foot dbline" id="dbline"></p>'+
@@ -649,14 +652,24 @@ tbody tr:last-child td{border-bottom:0}
       '</div>';
 
     var metaEq=Math.round(cfg.metaTotal/3);
+    var TCOL={"1":"#159BD6","2":"#12925A","3":"#C77D1F"};
+    var order=["1","2","3"].slice().sort(function(a,b){return s.teams[b].n-s.teams[a].n;});
+    var rankOf={}; order.forEach(function(k,i){ rankOf[k]=i+1; });
+    var medal={1:"🥇 1°",2:"🥈 2°",3:"🥉 3°"};
     $("#teams").innerHTML=["1","2","3"].map(function(k){
       var t=s.teams[k], p=metaEq?Math.min(100,t.n/metaEq*100):0;
       var link=baseURL()+"#/e/"+k;
-      return '<div class="tcard">'+
-        '<div class="tname">'+esc(eqName(k))+'</div>'+
+      var rk = s.teams["1"].n+s.teams["2"].n+s.teams["3"].n ? medal[rankOf[k]] : "—";
+      return '<div class="tcard" style="--tc:'+TCOL[k]+'">'+
+        '<div class="thead-t"><div class="tname">'+esc(eqName(k))+'</div><span class="rankb">'+rk+'</span></div>'+
         '<div class="tbig">'+t.n+' <small>/ '+metaEq+'</small></div>'+
-        '<div class="bar"><i class="'+cls(p)+'" style="width:'+p.toFixed(1)+'%"></i></div>'+
-        '<div class="trow"><span>Hoy: <b>'+t.hoy+'</b></span><span>Prom.: <b>'+(t.n?t.avg.toFixed(1):"—")+'</b></span><span>Satisf.: <b>'+(t.n?pf(t.sat):"—")+'</b></span></div>'+
+        '<div class="tpct">'+p.toFixed(0)+'% de su meta</div>'+
+        '<div class="bar" style="height:12px"><i style="width:'+p.toFixed(1)+'%;background:var(--tc)"></i></div>'+
+        '<div class="tstats">'+
+          '<div class="tstat"><span>Hoy</span><b>'+t.hoy+'</b></div>'+
+          '<div class="tstat"><span>Promedio</span><b>'+(t.n?t.avg.toFixed(1):"—")+'</b></div>'+
+          '<div class="tstat"><span>Satisf.</span><b>'+(t.n?pf(t.sat):"—")+'</b></div>'+
+        '</div>'+
         '<div class="tlink"><input readonly value="'+esc(link)+'"><button class="lnk" data-cp="'+esc(link)+'">Copiar</button><button class="lnk" data-qr="'+k+'">QR</button></div>'+
         '<div class="qrbox" id="qr'+k+'" hidden></div>'+
       '</div>';
