@@ -106,14 +106,24 @@ function getRows_() {
 }
 
 function getConfig_() {
-  var c = { metaTotal:310000, metaDiaria:5000,
+  var c = { metaTotal:310000, metaDiaria:5000, fechaInicio:'', fechaFin:'',
             equipo1:'Equipo 1', equipo2:'Equipo 2', equipo3:'Equipo 3' };
   var sh = ss_().getSheetByName(SHEET_CONFIG);
-  if (!sh) return c;
-  var v = sh.getDataRange().getValues();
-  for (var i = 0; i < v.length; i++) {
-    var k = String(v[i][0] || '').trim();
-    if (k && v[i][1] !== '') c[k] = v[i][1];
+  if (sh) {
+    var v = sh.getDataRange().getValues();
+    for (var i = 0; i < v.length; i++) {
+      var k = String(v[i][0] || '').trim();
+      if (k && v[i][1] !== '') {
+        var raw = v[i][1];
+        if (k === 'fechaInicio' || k === 'fechaFin') {
+          c[k] = (raw instanceof Date)
+            ? Utilities.formatDate(raw, TZ, 'yyyy-MM-dd')
+            : String(raw).trim().slice(0, 10);
+        } else {
+          c[k] = raw;
+        }
+      }
+    }
   }
   c.metaTotal  = Number(c.metaTotal)  || 310000;
   c.metaDiaria = Number(c.metaDiaria) || 5000;

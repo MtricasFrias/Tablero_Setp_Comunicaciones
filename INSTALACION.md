@@ -99,6 +99,8 @@ Cada respuesta queda marcada con su equipo, así el panel separa el avance del E
 | `metaTotal` | `310000` | meta total: 50% de la población de Ibagué (~620.000) en 3 meses |
 | `metaDiaria` | `5000` | meta por día = 310.000 ÷ ~62 días hábiles (lun-vie, menos festivos) |
 | `equipo1` / `equipo2` / `equipo3` | `Equipo 1 · Territorio` | nombre visible de cada equipo |
+| `fechaInicio` | `2026-09-15` | *(opcional)* inicio de la campaña, formato `AAAA-MM-DD`. Si no la pones, usa la primera respuesta. |
+| `fechaFin` | `2026-12-15` | *(opcional)* fin de la campaña. Si no la pones, son 90 días desde el inicio. |
 
 > La meta diaria de 5.000 asume recolección masiva por QR/NFC (vinilos en la ciudad), no 3 personas digitando. Ajusta `metaTotal` si el DANE reporta otra población, o `metaDiaria` si el rango de fechas cambia.
 
