@@ -3,6 +3,13 @@
 La página es un solo archivo (`index.html`). Guarda las respuestas en una **Hoja de Google**
 a través de un script gratuito de **Google Apps Script**. No hay servidores ni costos.
 
+La encuesta pide: **valoración (caritas 1–5)**, **nombre completo**, **correo electrónico** y un
+**comentario opcional**. El correo se usa para no repetir registros.
+
+> **¿Ya tenías la versión con "documento"?** Pega el nuevo `apps-script.gs`, borra las filas viejas
+> de la pestaña **Respuestas** (deja solo la fila 1), corre `inicializar` y vuelve a implementar
+> (Parte A, pasos 3–5). Las columnas nuevas son: `timestamp | fecha | equipo | nombre | correo | valoracion | comentario`.
+
 - **Rol 1 — Encuestado:** entra por QR/NFC, responde en 10 segundos, no necesita cuenta.
 - **Rol 2 — Análisis:** entra a `…/#/panel`, escribe la contraseña, ve gráficos y tablas. Tampoco necesita cuenta.
 - **Editor (tú):** subes la página y editas metas/nombres/padrón en la Hoja de Google.
@@ -95,9 +102,9 @@ Cada respuesta queda marcada con su equipo, así el panel separa el avance del E
 
 > La meta diaria de 5.000 asume recolección masiva por QR/NFC (vinilos en la ciudad), no 3 personas digitando. Ajusta `metaTotal` si el DANE reporta otra población, o `metaDiaria` si el rango de fechas cambia.
 
-**Pestaña `Padron`** (opcional): pega en la columna A las cédulas habilitadas, una por fila.
-Si tiene datos, la encuesta **rechaza** documentos que no estén en la lista.
-Si la dejas vacía, se acepta cualquier documento de 6 a 10 dígitos.
+**Pestaña `Padron`** (opcional): pega en la columna A los **correos** habilitados, uno por fila.
+Si tiene datos, la encuesta **rechaza** correos que no estén en la lista.
+Si la dejas vacía, se acepta cualquier correo con formato válido.
 
 Los cambios se ven en el panel al pulsar **Actualizar** (o solos, cada minuto).
 
@@ -105,7 +112,9 @@ Los cambios se ven en el panel al pulsar **Actualizar** (o solos, cada minuto).
 
 ## Cómo funciona / límites
 
-- **Sin repetidos:** un mismo documento no puede responder dos veces (lo valida el backend).
+- **Sin repetidos:** un mismo correo no puede responder dos veces (lo valida el backend).
+- **Tiempo real:** el panel se actualiza solo cada 30 segundos (y al instante con el botón *Actualizar*).
+- **Satisfacción:** % de respuestas con carita 4 (🙂) o 5 (😄), dividido entre el total de respuestas.
 - **Datos:** la hoja `Respuestas` es la base de datos. Puedes borrar filas de prueba a mano
   antes de arrancar. El panel exporta todo a CSV.
 - **Seguridad:** la contraseña del panel vive en el `index.html` (protege la *vista*, no cifra
