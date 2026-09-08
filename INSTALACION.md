@@ -87,11 +87,13 @@ Cada respuesta queda marcada con su equipo, así el panel separa el avance del E
 
 **Pestaña `Config`** (columna A = clave, columna B = valor):
 
-| clave | ejemplo | qué hace |
+| clave | valor | qué hace |
 |---|---|---|
-| `metaTotal` | `1000` | meta total de encuestas de la campaña |
-| `metaDiaria` | `40` | meta por día (todos los equipos juntos) |
+| `metaTotal` | `310000` | meta total: 50% de la población de Ibagué (~620.000) en 3 meses |
+| `metaDiaria` | `5000` | meta por día = 310.000 ÷ ~62 días hábiles (lun-vie, menos festivos) |
 | `equipo1` / `equipo2` / `equipo3` | `Equipo 1 · Territorio` | nombre visible de cada equipo |
+
+> La meta diaria de 5.000 asume recolección masiva por QR/NFC (vinilos en la ciudad), no 3 personas digitando. Ajusta `metaTotal` si el DANE reporta otra población, o `metaDiaria` si el rango de fechas cambia.
 
 **Pestaña `Padron`** (opcional): pega en la columna A las cédulas habilitadas, una por fila.
 Si tiene datos, la encuesta **rechaza** documentos que no estén en la lista.

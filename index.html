@@ -286,7 +286,9 @@ tbody tr:last-child td{border-bottom:0}
   var app=document.getElementById("app");
 
   var FALLBACK={
-    metaTotal:1000, metaDiaria:40,
+    /* Meta: 50% de la población de Ibagué (~620.000) = 310.000 en 3 meses.
+       ~62 días hábiles (lun-vie, menos festivos) → 310.000 / 62 ≈ 5.000/día. */
+    metaTotal:310000, metaDiaria:5000,
     equipos:{"1":"Equipo 1 · Territorio","2":"Equipo 2 · Paraderos","3":"Equipo 3 · Instituciones"},
     padron:[]
   };
