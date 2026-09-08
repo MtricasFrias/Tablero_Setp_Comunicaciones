@@ -239,6 +239,7 @@ textarea{resize:vertical; min-height:70px}
 .charts{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
 .cbox{position:relative; height:240px}
 .cbox canvas{position:absolute; inset:0}
+.chartnote{margin:10px 2px 0; font-size:11.5px; color:var(--muted); line-height:1.35}
 
 .thead{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px}
 .thead h3{margin:0; flex:1}
@@ -608,7 +609,7 @@ tbody tr:last-child td{border-bottom:0}
       '<section class="panel goals"><h3>Cumplimiento de metas</h3><div id="goals"></div></section>'+
       '<section class="panel"><h3>Equipos de encuestadores <span class="hint">— comparte un enlace distinto con cada persona</span></h3><div class="teams" id="teams"></div></section>'+
       '<section class="charts">'+
-        '<div class="panel"><h3>Respuestas por día (últimos 14)</h3><div class="cbox"><canvas id="cDia"></canvas></div></div>'+
+        '<div class="panel"><h3>Respuestas por día <span class="hint">— últimos 14 días</span></h3><div class="cbox"><canvas id="cDia"></canvas></div><p class="chartnote" id="diaMeta"></p></div>'+
         '<div class="panel"><h3>Valoración de las charlas</h3><div class="cbox"><canvas id="cRate"></canvas></div></div>'+
         '<div class="panel"><h3>Aporte por equipo</h3><div class="cbox"><canvas id="cTeam"></canvas></div></div>'+
       '</section>'+
@@ -777,10 +778,13 @@ tbody tr:last-child td{border-bottom:0}
     var c=themeColors();
     Chart.defaults.font.family='"Public Sans",system-ui,sans-serif';
     Chart.defaults.color=c.muted;
+    var oDia=chartOpts(c,{y:{beginAtZero:true,grace:"12%",ticks:{precision:0,maxTicksLimit:6,callback:function(v){return (+v).toLocaleString("es-CO");}}}});
+    oDia.plugins.legend.display=false;
+    oDia.plugins.tooltip={callbacks:{label:function(i){return i.parsed.y.toLocaleString("es-CO")+" respuestas";}}};
+    oDia.scales.x.grid.display=false;
     charts.dia=new Chart($("#cDia"),{type:"bar",data:{labels:[],datasets:[
-      {type:"bar",label:"Respuestas",data:[],backgroundColor:c.cyan,borderRadius:4,order:2},
-      {type:"line",label:"Meta diaria",data:[],borderColor:c.muted,borderDash:[5,5],pointRadius:0,borderWidth:1.5,order:1}
-    ]},options:chartOpts(c,{y:{beginAtZero:true,ticks:{precision:0}}})});
+      {label:"Respuestas",data:[],backgroundColor:[],borderRadius:6,maxBarThickness:34}
+    ]},options:oDia});
     charts.rate=new Chart($("#cRate"),{type:"bar",data:{labels:["Muy mala","Mala","Regular","Buena","Excelente"],
       datasets:[{label:"Respuestas",data:[],backgroundColor:RAMP.slice(1),borderRadius:4}]},
       options:chartOpts(c,{x:{beginAtZero:true,ticks:{precision:0}}},"y")});
@@ -799,10 +803,13 @@ tbody tr:last-child td{border-bottom:0}
   }
   function updateCharts(s){
     if(charts.dia){
+      var c=themeColors();
       charts.dia.data.labels=s.days.map(function(d){return d.d;});
       charts.dia.data.datasets[0].data=s.days.map(function(d){return d.n;});
-      charts.dia.data.datasets[1].data=s.days.map(function(){return cfg.metaDiaria;});
+      charts.dia.data.datasets[0].backgroundColor=s.days.map(function(d,i){return i===s.days.length-1?c.navy:c.cyan;});
       charts.dia.update();
+      var dm=$("#diaMeta");
+      if(dm) dm.textContent="La barra azul oscuro es hoy · meta diaria: "+Number(cfg.metaDiaria).toLocaleString("es-CO")+" respuestas";
     }
     if(charts.rate){ charts.rate.data.datasets[0].data=s.dist; charts.rate.update(); }
     if(charts.team){
