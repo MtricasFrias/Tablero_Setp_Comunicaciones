@@ -26,6 +26,10 @@ var HEADER = ['timestamp', 'fecha', 'equipo', 'nombre', 'correo', 'valoracion', 
    Cambia esta base si mueves el sitio a otro dominio. */
 var IMG_BASE = 'https://mtricasfrias.github.io/Tablero_Setp_Comunicaciones/img/';
 
+/* WhatsApp del SETP: 57 + número, sin espacios. Vacío ('') = no muestra el botón. */
+var WA_NUMERO = '573144364606';
+var WA_TEXTO  = 'Hola, acabé de responder la encuesta de CULTURA SETP 🚌';
+
 /** El panel pide los datos aquí (GET). */
 function doGet(e) {
   return json_({
@@ -150,7 +154,11 @@ function correoHtml_(nombre) {
         foto('correo-3.jpg', 'Buses del SETP') +
       '</tr></table>' +
       '<p style="margin:0 0 12px">Con tu opinión hacemos mejor ese trabajo.</p>' +
-      '<p style="margin:0;color:#159BD6;font-weight:700;font-size:15px">Tu comportamiento mueve la ciudad.</p>' +
+      '<p style="margin:0 0 14px;color:#159BD6;font-weight:700;font-size:15px">Tu comportamiento mueve la ciudad.</p>' +
+      (WA_NUMERO ?
+        '<a href="https://wa.me/' + WA_NUMERO + '?text=' + encodeURIComponent(WA_TEXTO) + '" ' +
+        'style="display:inline-block;background:#25D366;color:#ffffff;text-decoration:none;font-weight:700;' +
+        'font-size:14px;padding:11px 18px;border-radius:10px">Escríbenos por WhatsApp</a>' : '') +
       '<p style="margin:18px 0 0;font-size:12px;color:#5B6A88">Área de Comunicaciones · SETP Ibagué · Alcaldía de Ibagué</p>' +
     '</div>' +
   '</div>';

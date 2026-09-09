@@ -172,6 +172,12 @@ textarea{resize:vertical; min-height:70px}
 .thanks h2{font-size:26px; color:var(--navy)}
 .thanks p{color:var(--muted); font-size:16.5px; margin:12px auto 0; max-width:38ch; line-height:1.55}
 .thanks .cta{max-width:280px; margin-inline:auto}
+.wabtn{display:inline-flex; align-items:center; gap:9px; margin-top:14px; padding:12px 20px; border-radius:13px;
+  background:#25D366; color:#fff; font-family:"Barlow",sans-serif; font-weight:800; font-size:15px; text-decoration:none;
+  box-shadow:0 10px 22px rgba(37,211,102,.35)}
+.wabtn:hover{background:#1FBE5B; text-decoration:none}
+.wabtn svg{width:20px; height:20px; fill:#fff; flex-shrink:0}
+.wahint{margin:8px auto 0; font-size:12px; color:var(--muted); max-width:34ch}
 @media (prefers-reduced-motion:reduce){ .bus{animation:none} .heart{animation:none} .thanks.go .conf{animation:none; opacity:0} }
 
 /* ---- login ---- */
@@ -282,6 +288,8 @@ tbody tr:last-child td{border-bottom:0}
      ADMIN_PASS: contraseña del panel de análisis. Cámbiala antes de publicar.        */
   var API_URL   = "https://script.google.com/macros/s/AKfycbwDK6C_tFaIH5yZRRUeeI6JH_DZZNr2XsxNkOgxcw9WZQU3FtxQBJVaBcxm_AsImx1XCA/exec";
   var ADMIN_PASS = "culturasetp2026";
+  var WA_NUMERO  = "573144364606";   /* WhatsApp del SETP (57 + número, sin espacios). Vacío = sin botón. */
+  var WA_TEXTO   = "Hola, acabé de responder la encuesta de CULTURA SETP 🚌";
   /* ══════════════════════════════════════════════════════════ */
   var API_OK = /^https:\/\/script\.google\.com\/.+\/exec$/.test(API_URL);
 
@@ -582,12 +590,18 @@ tbody tr:last-child td{border-bottom:0}
           '</svg>'+
           '<span class="heart">💙</span>'+
         '</div>';
+      var wa = WA_NUMERO ?
+        '<div><a class="wabtn" href="https://wa.me/'+WA_NUMERO+'?text='+encodeURIComponent(WA_TEXTO)+'" target="_blank" rel="noopener">'+
+          '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C9 3 3 9 3 16c0 2.5.7 4.8 1.9 6.8L3 29l6.4-1.7C11.3 28.4 13.6 29 16 29c7 0 13-6 13-13S23 3 16 3zm0 23.5c-2.1 0-4-.6-5.7-1.6l-.4-.2-3.8 1 1-3.7-.3-.4C5.6 20.3 5 18.2 5 16 5 10 10 5 16 5s11 5 11 11-5 10.5-11 10.5z"/><path d="M22 19.2c-.3-.2-1.8-.9-2.1-1s-.5-.1-.7.1c-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5s0-.4 0-.5-.7-1.7-1-2.3c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.5.3-.7.3-1.4.2-1.5s-.3-.2-.6-.3z"/></svg>'+
+          'Escríbenos por WhatsApp</a>'+
+          '<p class="wahint">Toca, envía el mensaje y recibe la confirmación del SETP.</p></div>' : '';
       main.innerHTML=
       '<div class="thanks'+(rm?"":" go")+'">'+
         scene+
         '<h2>'+(o.already?"Ya teníamos tu respuesta":"¡Gracias por responder!")+'</h2>'+
         '<p>Tu respuesta ya está moviendo a Ibagué: nos ayuda a mejorar la calidad y la movilidad del transporte público.</p>'+
         (o.demo?'<p class="micro">Modo demostración: se guardó solo en este dispositivo.</p>':'')+
+        wa+
         '<button class="cta" id="again">Responder otra</button>'+
       '</div>';
     }
