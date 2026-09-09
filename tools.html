@@ -49,18 +49,16 @@ function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y);
   ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
   ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
 
-function scene(ctx, x, spin, span){
+var PERIOD = 342;  // 9 × 38 (dash 22+16) → vía en loop perfecto
+function scene(ctx, off, spin){
   const W = ctx.canvas.width, H = ctx.canvas.height;
-  // fondo
   ctx.fillStyle = '#EEF3FA'; ctx.fillRect(0,0,W,H);
-  // vía
   ctx.fillStyle = '#3A4256'; ctx.fillRect(0, H-22, W, 22);
   ctx.strokeStyle = '#F2C94C'; ctx.lineWidth = 3; ctx.setLineDash([22,16]);
-  ctx.lineDashOffset = -x;
+  ctx.lineDashOffset = -off;
   ctx.beginPath(); ctx.moveTo(0, H-11); ctx.lineTo(W, H-11); ctx.stroke();
   ctx.setLineDash([]); ctx.lineDashOffset = 0;
-  bus(ctx, x, spin);
-  bus(ctx, x - span, spin);   // segundo bus para loop sin huecos
+  for (let i = -1; i * PERIOD < W + PERIOD; i++) bus(ctx, i * PERIOD + off, spin);
 }
 function bus(ctx, x, spin){
   const H = ctx.canvas.height;
@@ -102,11 +100,11 @@ async function makeBus(){
     workerScript: URL.createObjectURL(workerBlob) });
   const c = document.createElement('canvas'); c.width=W; c.height=H;
   const ctx = c.getContext('2d');
-  const frames = 30, span = 760;           // 760 = 20 × (22+16) → dashes en loop perfecto
+  const frames = 24;
   for (let f=0; f<frames; f++){
-    const x = -280 + (f/frames)*span;      // loop continuo con 2 buses
-    scene(ctx, x, (f/frames)*Math.PI*6, span);
-    gif.addFrame(ctx, { copy:true, delay: 70 });
+    const off = (f/frames) * PERIOD;       // recorre exactamente un período → loop perfecto
+    scene(ctx, off, (f/frames)*Math.PI*4);
+    gif.addFrame(ctx, { copy:true, delay: 75 });
   }
   gif.on('finished', blob => {
     const url = URL.createObjectURL(blob);
