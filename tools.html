@@ -1,0 +1,114 @@
+<!doctype html><html><head><meta charset="utf-8"><title>tools</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+<style>body{font-family:monospace;background:#111;color:#ddd;padding:16px}
+textarea{width:100%;height:70px;font-size:9px}img,canvas{background:#333;margin:4px;vertical-align:top}
+h3{color:#4cf;margin:18px 0 4px}</style></head><body>
+<h1>Herramientas CULTURA SETP</h1>
+<div id="log">cargando…</div>
+
+<h3>1 · Fotos recortadas 3:2 (900×600)</h3>
+<div id="crops"></div>
+
+<h3>2 · Bus animado (GIF)</h3>
+<div id="busout"></div>
+
+<script>
+const log = m => { document.getElementById('log').textContent = m; };
+
+/* ---------- 1. recortar fotos a 3:2 ---------- */
+async function crop(src, w, h){
+  const im = new Image(); im.crossOrigin='anonymous';
+  await new Promise((ok,err)=>{ im.onload=ok; im.onerror=err; im.src=src; });
+  const targetRatio = w/h;
+  let sw = im.naturalWidth, sh = im.naturalHeight;
+  let cw = sw, ch = sw/targetRatio;
+  if (ch > sh) { ch = sh; cw = sh*targetRatio; }
+  const sx = (sw-cw)/2, sy = (sh-ch)/2;
+  const c = document.createElement('canvas'); c.width=w; c.height=h;
+  c.getContext('2d').drawImage(im, sx, sy, cw, ch, 0, 0, w, h);
+  return c.toDataURL('image/jpeg', 0.82);
+}
+(async () => {
+  const out = document.getElementById('crops');
+  for (const name of ['correo-1.jpg','correo-2.jpg','correo-3.jpg']) {
+    try {
+      const d = await crop('img/'+name+'?v='+Date.now(), 900, 600);
+      const wrap = document.createElement('div');
+      wrap.innerHTML = '<div>'+name+' ('+Math.round(d.length/1024)+' KB b64)</div>'+
+        '<img src="'+d+'" width="200"><textarea>'+d+'</textarea>';
+      out.appendChild(wrap);
+      window['CROP_'+name.replace(/\W/g,'_')] = d;
+    } catch(e){ out.appendChild(Object.assign(document.createElement('div'),{textContent:name+' ERROR: '+e})); }
+  }
+  log('fotos listas');
+  makeBus();
+})();
+
+/* ---------- 2. GIF del bus ---------- */
+function drawBus(ctx, x){
+  const W = ctx.canvas.width, H = ctx.canvas.height;
+  ctx.clearRect(0,0,W,H);
+  // suelo
+  ctx.strokeStyle = '#C9D3E6'; ctx.lineWidth = 3; ctx.setLineDash([14,10]);
+  ctx.beginPath(); ctx.moveTo(0, H-14); ctx.lineTo(W, H-14); ctx.stroke(); ctx.setLineDash([]);
+  ctx.save(); ctx.translate(x, 0);
+  // cuerpo bus naranja
+  const bx=0, by=14, bw=180, bh=64;
+  ctx.fillStyle = '#F26A21';
+  rr(ctx, bx, by, bw, bh, 14); ctx.fill();
+  // franja techo
+  ctx.fillStyle = '#0B1F5C'; rr(ctx, bx+8, by+6, bw-16, 24, 6); ctx.fill();
+  // ventanas
+  ctx.fillStyle = '#8FD3F2';
+  for (let i=0;i<4;i++){ rr(ctx, bx+14+i*36, by+10, 26, 16, 3); ctx.fill(); }
+  // faro
+  ctx.fillStyle = '#FFD23F'; rr(ctx, bx+bw-14, by+40, 12, 12, 3); ctx.fill();
+  // ruedas
+  const wy = by+bh;
+  for (const wx of [bx+40, bx+140]) {
+    ctx.fillStyle = '#12203a'; ctx.beginPath(); ctx.arc(wx, wy, 14, 0, 7); ctx.fill();
+    ctx.fillStyle = '#8a94a6';
+    ctx.save(); ctx.translate(wx, wy); ctx.rotate(x*0.25);
+    ctx.beginPath(); ctx.arc(0,0,5,0,7); ctx.fill();
+    ctx.strokeStyle='#8a94a6'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(-11,0); ctx.lineTo(11,0); ctx.moveTo(0,-11); ctx.lineTo(0,11); ctx.stroke();
+    ctx.restore();
+  }
+  ctx.restore();
+}
+function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+
+async function makeBus(){
+  log('generando GIF del bus…');
+  const W=440, H=100;
+  const workerBlob = await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js').then(r=>r.blob());
+  const gif = new GIF({ workers:2, quality:8, width:W, height:H, transparent:null,
+    workerScript: URL.createObjectURL(workerBlob) });
+  const c = document.createElement('canvas'); c.width=W; c.height=H;
+  const ctx = c.getContext('2d');
+  const frames = 40;
+  for (let f=0; f<frames; f++){
+    const t = f/frames;
+    const x = -200 + t*(W+200);           // entra por la izq, sale por la der
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,W,H);
+    drawBus(ctx, x);
+    gif.addFrame(ctx, { copy:true, delay: 60 });
+  }
+  gif.on('finished', blob => {
+    const url = URL.createObjectURL(blob);
+    const r = new FileReader();
+    r.onload = () => {
+      window.BUS_GIF = r.result;
+      document.getElementById('busout').innerHTML =
+        '<div>bus.gif ('+Math.round(blob.size/1024)+' KB)</div>'+
+        '<img src="'+url+'"><textarea>'+r.result+'</textarea>';
+      log('LISTO. Copia los textarea o dime que ya está.');
+    };
+    r.readAsDataURL(blob);
+  });
+  gif.render();
+}
+</script>
+</body></html>
