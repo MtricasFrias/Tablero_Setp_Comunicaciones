@@ -602,10 +602,10 @@ tbody tr:last-child td{border-bottom:0}
         '<p>Tu respuesta ya está moviendo a Ibagué: nos ayuda a mejorar la calidad y la movilidad del transporte público.</p>'+
         (o.demo?'<p class="micro">Modo demostración: se guardó solo en este dispositivo.</p>':'')+
         wa+
-        '<button class="cta" id="again">Responder otra</button>'+
+        '<p class="micro"><a href="#'+(view.team?'/e/'+view.team:'/e')+'" id="again">↻ Responder otra encuesta</a></p>'+
       '</div>';
     }
-    $("#again").onclick=function(){ view.key=null; render(); };
+    var ag=$("#again"); if(ag) ag.onclick=function(e){ e.preventDefault(); view.key=null; render(); };
     window.scrollTo(0,0);
   }
 
