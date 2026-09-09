@@ -1,29 +1,33 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8">
-<title>Generar bus.gif — CULTURA SETP</title>
+<title>Generar bus.gif v3 — CULTURA SETP</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
 <style>
-  body{font-family:Arial,Helvetica,sans-serif;background:#EEF2F9;color:#0D1730;max-width:620px;margin:24px auto;padding:0 16px}
-  h1{color:#0B1F5C;font-size:20px}
+  body{font-family:Arial,Helvetica,sans-serif;background:#EEF2F9;color:#0D1730;max-width:640px;margin:24px auto;padding:0 16px}
+  h1{color:#0B1F5C;font-size:19px}
   .box{background:#fff;border:1px solid #E0E6F1;border-radius:12px;padding:18px;margin-top:14px}
   #estado{font-weight:700;color:#159BD6}
-  button{background:#159BD6;color:#fff;border:0;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px}
-  img{display:block;margin-top:10px;border:1px solid #ccc;max-width:100%}
-  ol{line-height:1.7}
+  .dl{background:#25D366;color:#fff;border:0;border-radius:12px;padding:16px 26px;font-size:18px;font-weight:800;cursor:pointer;margin-top:14px;display:none}
+  img{display:block;margin-top:12px;border:1px solid #ccc;border-radius:8px;max-width:100%}
+  ol{line-height:1.8} code{background:#EEF2F9;padding:2px 5px;border-radius:4px}
+  .v{font-size:12px;color:#8a94a6}
 </style></head><body>
-<h1>Generar el bus animado del correo (vía estática, el bus se mueve)</h1>
+<h1>Generar el bus animado <span class="v">(versión 3 · vía fija, bus en movimiento)</span></h1>
+
 <div class="box">
   <p id="estado">Generando… espera unos segundos.</p>
   <div id="prev"></div>
-  <button id="dl" style="display:none">Descargar bus.gif</button>
+  <button class="dl" id="dl">⬇  Descargar bus.gif</button>
 </div>
+
 <div class="box">
   <b>Qué hacer con el archivo:</b>
   <ol>
-    <li>El archivo <code>bus.gif</code> se descarga solo (o usa el botón).</li>
-    <li>Muévelo a la carpeta <code>img</code> del proyecto y <b>reemplaza</b> el que ya está:<br>
-      <code>Tablero_Setp_Comunicaciones\img\bus.gif</code></li>
-    <li>En GitHub Desktop: Commit + Push.</li>
-    <li>Borra este archivo (<code>generar-bus.html</code>) del proyecto y haz otro commit.</li>
+    <li>Toca <b>Descargar bus.gif</b>.</li>
+    <li>Muévelo a la carpeta <code>img</code> del proyecto y <b>reemplaza</b> el que ya está:
+      <br><code>Tablero_Setp_Comunicaciones\img\bus.gif</code>
+      <br>Si te queda como <code>bus (1).gif</code>, renómbralo a <code>bus.gif</code>.</li>
+    <li>GitHub Desktop → Commit → Push.</li>
+    <li>Borra <code>generar-bus.html</code> del proyecto → otro Commit → Push.</li>
   </ol>
 </div>
 
@@ -32,21 +36,22 @@ function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);
   c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);
   c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
 
-var PERIOD = 342;
+var PERIOD = 400;   // separación entre buses; > ancho parcial => se ve la vía entre ellos
+
 function bus(c,x,spin){
   c.save();c.translate(x,0);
-  var bx=0,by=18,bw=210,bh=70,wy=by+bh+2;
+  var by=18,bw=210,bh=70,wy=by+bh+2;
   c.fillStyle='rgba(11,31,92,.18)';
-  c.beginPath();c.ellipse(bx+bw/2,wy+14,bw/2,7,0,0,7);c.fill();
-  c.fillStyle='#F26A21';rr(c,bx,by,bw,bh,16);c.fill();
-  c.fillStyle='#D9531A';rr(c,bx,by+bh-14,bw,14,8);c.fill();
-  c.fillStyle='#0B1F5C';rr(c,bx+10,by+8,bw-20,30,8);c.fill();
+  c.beginPath();c.ellipse(bw/2,wy+14,bw/2,7,0,0,7);c.fill();
+  c.fillStyle='#F26A21';rr(c,0,by,bw,bh,16);c.fill();
+  c.fillStyle='#D9531A';rr(c,0,by+bh-14,bw,14,8);c.fill();
+  c.fillStyle='#0B1F5C';rr(c,10,by+8,bw-20,30,8);c.fill();
   c.fillStyle='#9BDCF7';
-  for(var i=0;i<5;i++){rr(c,bx+18+i*37,by+13,28,20,4);c.fill();}
-  c.fillStyle='#0B1F5C';rr(c,bx+bw-30,by+42,22,26,4);c.fill();
-  c.fillStyle='#FFE08A';rr(c,bx+bw-8,by+44,8,12,3);c.fill();
+  for(var i=0;i<5;i++){rr(c,18+i*37,by+13,28,20,4);c.fill();}
+  c.fillStyle='#0B1F5C';rr(c,bw-30,by+42,22,26,4);c.fill();
+  c.fillStyle='#FFE08A';rr(c,bw-8,by+44,8,12,3);c.fill();
   for(var k=0;k<2;k++){
-    var cx=k?bx+bw-42:bx+42;
+    var cx=k?bw-42:42;
     c.fillStyle='#12141C';c.beginPath();c.arc(cx,wy,16,0,7);c.fill();
     c.save();c.translate(cx,wy);c.rotate(spin);
     c.fillStyle='#C7CDD9';c.beginPath();c.arc(0,0,7,0,7);c.fill();
@@ -57,43 +62,54 @@ function bus(c,x,spin){
   }
   c.restore();
 }
+
+function paradero(c,x,H){
+  // poste + señal (ancla visual fija)
+  c.fillStyle='#9AA6C4';c.fillRect(x-2,26,4,H-48);
+  c.fillStyle='#0B1F5C';rr(c,x-20,10,40,26,4);c.fill();
+  c.fillStyle='#F26A21';rr(c,x-13,15,26,12,2);c.fill();
+}
+
 function scene(c,off,spin){
   var W=c.canvas.width,H=c.canvas.height;
   c.fillStyle='#EEF3FA';c.fillRect(0,0,W,H);
+  paradero(c,W-34,H);                       // señal fija a la derecha
   c.fillStyle='#3A4256';c.fillRect(0,H-22,W,22);
-  // vía ESTÁTICA (las rayas no se mueven)
-  c.strokeStyle='#F2C94C';c.lineWidth=3;c.setLineDash([22,16]);
+  c.strokeStyle='#F2C94C';c.lineWidth=3;c.setLineDash([22,16]);   // rayas SIN mover
   c.beginPath();c.moveTo(0,H-11);c.lineTo(W,H-11);c.stroke();
   c.setLineDash([]);
-  // buses que se mueven
-  for(var i=-1;i*PERIOD<W+PERIOD;i++) bus(c,i*PERIOD+off,spin);
+  for(var i=-1;i*PERIOD<W+PERIOD;i++) bus(c,i*PERIOD+off,spin);  // solo los buses se mueven
 }
+
 function ready(blob){
   var url=URL.createObjectURL(blob);
-  document.getElementById('estado').textContent='Listo ('+Math.round(blob.size/1024)+' KB).';
-  document.getElementById('prev').innerHTML='<img src="'+url+'" width="480">';
-  var a=document.createElement('a');a.href=url;a.download='bus.gif';
-  document.body.appendChild(a);a.click();
-  var b=document.getElementById('dl');b.style.display='inline-block';
-  b.onclick=function(){var a2=document.createElement('a');a2.href=url;a2.download='bus.gif';a2.click();};
+  document.getElementById('estado').textContent='Listo ('+Math.round(blob.size/1024)+' KB). Toca el botón verde para descargar.';
+  document.getElementById('prev').innerHTML='<img src="'+url+'" style="width:100%;max-width:480px">';
+  var b=document.getElementById('dl');
+  b.style.display='inline-block';
+  b.onclick=function(){
+    var a=document.createElement('a');a.href=url;a.download='bus.gif';
+    document.body.appendChild(a);a.click();a.remove();
+  };
 }
+
 (async function(){
   try{
     var W=480,H=120;
-    var wb=await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js').then(r=>r.blob());
+    var wb=await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js').then(function(r){return r.blob();});
     var gif=new GIF({workers:2,quality:10,width:W,height:H,repeat:0,background:'#EEF3FA',
       workerScript:URL.createObjectURL(wb)});
     var cv=document.createElement('canvas');cv.width=W;cv.height=H;
     var c=cv.getContext('2d');
-    var frames=24;
+    var frames=26;
     for(var f=0;f<frames;f++){
       scene(c,(f/frames)*PERIOD,(f/frames)*Math.PI*4);
-      gif.addFrame(c,{copy:true,delay:75});
+      gif.addFrame(c,{copy:true,delay:70});
     }
     gif.on('finished',ready);
     gif.render();
   }catch(e){
-    document.getElementById('estado').textContent='Error: '+e+' — abre este archivo con Chrome o Edge y con internet.';
+    document.getElementById('estado').textContent='Error: '+e+' — abre este enlace en Chrome o Edge, con internet.';
   }
 })();
 </script>
