@@ -36,7 +36,7 @@ function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);
   c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);
   c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
 
-var PERIOD = 400;   // separación entre buses; > ancho parcial => se ve la vía entre ellos
+var GAP = 640;      // 480 (ancho) + 160: cuando un bus sale por la derecha, el otro entra por la izquierda
 
 function bus(c,x,spin){
   c.save();c.translate(x,0);
@@ -70,15 +70,17 @@ function paradero(c,x,H){
   c.fillStyle='#F26A21';rr(c,x-13,15,26,12,2);c.fill();
 }
 
-function scene(c,off,spin){
+function scene(c,x,spin){
   var W=c.canvas.width,H=c.canvas.height;
   c.fillStyle='#EEF3FA';c.fillRect(0,0,W,H);
-  paradero(c,W-34,H);                       // señal fija a la derecha
+  paradero(c,W-30,H);                       // señal FIJA a la derecha (referencia visual)
+  paradero(c,40,H);                         // señal FIJA a la izquierda
   c.fillStyle='#3A4256';c.fillRect(0,H-22,W,22);
   c.strokeStyle='#F2C94C';c.lineWidth=3;c.setLineDash([22,16]);   // rayas SIN mover
   c.beginPath();c.moveTo(0,H-11);c.lineTo(W,H-11);c.stroke();
   c.setLineDash([]);
-  for(var i=-1;i*PERIOD<W+PERIOD;i++) bus(c,i*PERIOD+off,spin);  // solo los buses se mueven
+  bus(c,x,spin);                            // solo el bus se mueve
+  bus(c,x-GAP,spin);                        // segundo bus para el loop continuo
 }
 
 function ready(blob){
@@ -101,9 +103,10 @@ function ready(blob){
       workerScript:URL.createObjectURL(wb)});
     var cv=document.createElement('canvas');cv.width=W;cv.height=H;
     var c=cv.getContext('2d');
-    var frames=26;
+    var frames=30;
     for(var f=0;f<frames;f++){
-      scene(c,(f/frames)*PERIOD,(f/frames)*Math.PI*4);
+      var x = -210 + (f/frames)*GAP;        // el bus recorre GAP px; al terminar, el 2º bus queda donde empezó el 1º
+      scene(c, x, (f/frames)*Math.PI*6);
       gif.addFrame(c,{copy:true,delay:70});
     }
     gif.on('finished',ready);
