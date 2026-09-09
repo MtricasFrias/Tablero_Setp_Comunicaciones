@@ -130,6 +130,10 @@ cuenta ni servicio extra** (ni Brevo ni nada).
   **igual se guarda**, solo no se manda ese correo.
 - **Desactivar:** pon la fila `correoAuto` = `no` en la pestaña Config.
 - **Editar el texto:** está en las funciones `correoTexto_` y `correoHtml_` del `apps-script.gs`.
+- **Imágenes del correo:** el logo y 3 fotos salen de la carpeta `img/` del repo (servidas por
+  GitHub Pages). Archivos: `logo-setp.png`, `correo-1.jpg`, `correo-2.jpg`, `correo-3.jpg`.
+  Para cambiarlas, reemplaza esos archivos en `img/` y haz commit + push. Si mueves el sitio
+  a otro dominio, ajusta `IMG_BASE` arriba del `apps-script.gs`.
 
 > **¿Necesitas más de 1.500/día?** Ahí sí toca un servicio de envío (Brevo, Resend, SendGrid…).
 > Es un cambio de ~15 líneas en `enviarGracias_` (usar `UrlFetchApp` con la API del servicio).

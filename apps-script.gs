@@ -22,6 +22,10 @@ var SHEET_CONFIG = 'Config';
 var SHEET_PADRON = 'Padron';
 var HEADER = ['timestamp', 'fecha', 'equipo', 'nombre', 'correo', 'valoracion', 'comentario'];
 
+/* Imágenes del correo (servidas por GitHub Pages, carpeta /img del repo).
+   Cambia esta base si mueves el sitio a otro dominio. */
+var IMG_BASE = 'https://mtricasfrias.github.io/Tablero_Setp_Comunicaciones/img/';
+
 /** El panel pide los datos aquí (GET). */
 function doGet(e) {
   return json_({
@@ -102,29 +106,49 @@ function esc_(s) {
 }
 
 function correoTexto_(nombre) {
-  return 'Hola ' + nombre + ',\n\n' +
-    'Gracias por asistir a la charla y por tomarte un momento para responder la encuesta de CULTURA SETP.\n\n' +
-    'Tu opinión es muy valiosa: con ella el Sistema Estratégico de Transporte Público de Ibagué ' +
-    'toma mejores decisiones para que moverse por la ciudad sea más seguro, cómodo e incluyente para todos.\n\n' +
-    '"Tu comportamiento mueve la ciudad".\n\n' +
+  return 'Hola ' + nombre + ', gracias por asistir a la charla y responder la encuesta.\n\n' +
+    '¿Qué es el SETP? El Sistema Estratégico de Transporte Público de Ibagué moderniza ' +
+    'vías, paraderos, semáforos y buses para que moverte por la ciudad sea más seguro, ' +
+    'cómodo e incluyente. Con tu opinión hacemos mejor ese trabajo.\n\n' +
+    'Tu comportamiento mueve la ciudad.\n\n' +
     '— Área de Comunicaciones · SETP Ibagué · Alcaldía de Ibagué';
 }
 
 function correoHtml_(nombre) {
   var n = esc_(nombre);
+  var foto = function (archivo, alt) {
+    return '<td width="33%" style="padding:0 3px" valign="top">' +
+      '<img src="' + IMG_BASE + archivo + '" alt="' + alt + '" width="100%" ' +
+      'style="display:block;width:100%;height:auto;border-radius:8px;border:0;background:#E6F4FB;color:#5B6A88;font-size:10px"></td>';
+  };
   return '' +
-  '<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;color:#0D1730">' +
-    '<div style="background:#0B1F5C;color:#fff;padding:18px 22px;border-radius:12px 12px 0 0">' +
-      '<div style="font-size:20px;font-weight:800;letter-spacing:1px">CULTURA SETP</div>' +
-      '<div style="font-size:12px;color:#B9D2F2;margin-top:2px">Tu comportamiento mueve la ciudad</div>' +
-    '</div>' +
-    '<div style="border:1px solid #E0E6F1;border-top:0;border-radius:0 0 12px 12px;padding:22px;line-height:1.55">' +
-      '<p>Hola <b>' + n + '</b>,</p>' +
-      '<p>Gracias por asistir a la charla y por tomarte un momento para responder la encuesta.</p>' +
-      '<p>Tu opinión es muy valiosa: con ella el <b>Sistema Estratégico de Transporte Público de Ibagué</b> ' +
-      'toma mejores decisiones para que moverse por la ciudad sea más seguro, cómodo e incluyente para todos.</p>' +
-      '<p style="color:#159BD6;font-weight:700;margin-top:18px">“Tu comportamiento mueve la ciudad”.</p>' +
-      '<p style="font-size:13px;color:#5B6A88;margin-top:22px">Área de Comunicaciones · SETP Ibagué<br>Alcaldía de Ibagué</p>' +
+  '<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0D1730;background:#ffffff">' +
+
+    '<table width="100%" cellpadding="0" cellspacing="0" role="presentation" ' +
+      'style="background:#0B1F5C;border-radius:12px 12px 0 0"><tr><td style="padding:16px 18px">' +
+      '<table cellpadding="0" cellspacing="0" role="presentation"><tr>' +
+        '<td style="background:#ffffff;border-radius:9px;padding:5px 7px">' +
+          '<img src="' + IMG_BASE + 'logo-setp.png" alt="SETP" width="36" height="36" style="display:block;border:0"></td>' +
+        '<td style="padding-left:12px" valign="middle">' +
+          '<div style="color:#ffffff;font-size:18px;font-weight:800;letter-spacing:1px">CULTURA SETP</div>' +
+          '<div style="color:#B9D2F2;font-size:11px;margin-top:2px">Tu comportamiento mueve la ciudad</div>' +
+        '</td>' +
+      '</tr></table>' +
+    '</td></tr></table>' +
+
+    '<div style="border:1px solid #E0E6F1;border-top:0;border-radius:0 0 12px 12px;padding:20px;line-height:1.5;font-size:14px">' +
+      '<p style="margin:0 0 12px">Hola <b>' + n + '</b>, gracias por asistir a la charla y responder la encuesta.</p>' +
+      '<p style="margin:0 0 4px"><b>¿Qué es el SETP?</b></p>' +
+      '<p style="margin:0 0 14px">El <b>Sistema Estratégico de Transporte Público de Ibagué</b> moderniza ' +
+        'vías, paraderos, semáforos y buses para que moverte por la ciudad sea más seguro, cómodo e incluyente.</p>' +
+      '<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 0 14px"><tr>' +
+        foto('correo-1.jpg', 'Obras del SETP') +
+        foto('correo-2.jpg', 'Vías renovadas') +
+        foto('correo-3.jpg', 'Buses del SETP') +
+      '</tr></table>' +
+      '<p style="margin:0 0 12px">Con tu opinión hacemos mejor ese trabajo.</p>' +
+      '<p style="margin:0;color:#159BD6;font-weight:700;font-size:15px">Tu comportamiento mueve la ciudad.</p>' +
+      '<p style="margin:18px 0 0;font-size:12px;color:#5B6A88">Área de Comunicaciones · SETP Ibagué · Alcaldía de Ibagué</p>' +
     '</div>' +
   '</div>';
 }
