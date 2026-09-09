@@ -28,6 +28,8 @@ La encuesta pide: **valoración (caritas 1–5)**, **nombre completo**, **correo
 4. **Inicializa las pestañas.** Arriba, en el selector de función elige **`inicializar`** y pulsa
    **Ejecutar**. Google te pedirá permisos:
    - *Revisar permisos* → elige tu cuenta → *Configuración avanzada* → *Ir a (nombre) (no seguro)* → *Permitir*.
+   - Verás que pide permiso para **editar tus hojas** y para **enviar correo como tú** (para el
+     correo de agradecimiento). Acepta ambos.
    - Esto crea en la hoja las pestañas **Respuestas**, **Config** y **Padron**.
 
 5. **Publica el servicio web.** Botón azul **Implementar → Nueva implementación**.
@@ -101,6 +103,9 @@ Cada respuesta queda marcada con su equipo, así el panel separa el avance del E
 | `equipo1` / `equipo2` / `equipo3` | `Equipo 1 · Territorio` | nombre visible de cada equipo |
 | `fechaInicio` | `2026-09-15` | *(opcional)* inicio de la campaña, formato `AAAA-MM-DD`. Si no la pones, usa la primera respuesta. |
 | `fechaFin` | `2026-12-15` | *(opcional)* fin de la campaña. Si no la pones, son 90 días desde el inicio. |
+| `correoAuto` | `si` | envía o no el correo de agradecimiento. Pon `no` para desactivarlo. |
+| `remitente` | `SETP Ibagué · Cultura SETP` | nombre que ve la persona como remitente del correo. |
+| `asuntoCorreo` | `¡Gracias por ser parte de Cultura SETP!` | asunto del correo de agradecimiento. |
 
 > La meta diaria de 5.000 asume recolección masiva por QR/NFC (vinilos en la ciudad), no 3 personas digitando. Ajusta `metaTotal` si el DANE reporta otra población, o `metaDiaria` si el rango de fechas cambia.
 
@@ -109,6 +114,26 @@ Si tiene datos, la encuesta **rechaza** correos que no estén en la lista.
 Si la dejas vacía, se acepta cualquier correo con formato válido.
 
 Los cambios se ven en el panel al pulsar **Actualizar** (o solos, cada minuto).
+
+---
+
+## Correo de agradecimiento
+
+Cada vez que alguien responde, el sistema le manda **automáticamente** un correo del SETP
+agradeciéndole. Lo envía el mismo Google Apps Script con `MailApp` — **no necesitas ninguna
+cuenta ni servicio extra** (ni Brevo ni nada).
+
+- **Sale desde:** la cuenta de Google dueña del script (la tuya). Se muestra con el nombre
+  de la fila `remitente` de la pestaña Config.
+- **Límite diario:** 100 correos/día si es una cuenta Gmail normal · 1.500/día si es Google
+  Workspace (correo institucional `@ibague.gov.co` o similar). Si se agota, la respuesta
+  **igual se guarda**, solo no se manda ese correo.
+- **Desactivar:** pon la fila `correoAuto` = `no` en la pestaña Config.
+- **Editar el texto:** está en las funciones `correoTexto_` y `correoHtml_` del `apps-script.gs`.
+
+> **¿Necesitas más de 1.500/día?** Ahí sí toca un servicio de envío (Brevo, Resend, SendGrid…).
+> Es un cambio de ~15 líneas en `enviarGracias_` (usar `UrlFetchApp` con la API del servicio).
+> Empieza con `MailApp`; si la campaña de verdad supera ese volumen, me dices y lo migramos.
 
 ---
 
