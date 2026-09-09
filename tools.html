@@ -49,7 +49,7 @@ function rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y);
   ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
   ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
 
-function scene(ctx, x, spin){
+function scene(ctx, x, spin, span){
   const W = ctx.canvas.width, H = ctx.canvas.height;
   // fondo
   ctx.fillStyle = '#EEF3FA'; ctx.fillRect(0,0,W,H);
@@ -59,7 +59,11 @@ function scene(ctx, x, spin){
   ctx.lineDashOffset = -x;
   ctx.beginPath(); ctx.moveTo(0, H-11); ctx.lineTo(W, H-11); ctx.stroke();
   ctx.setLineDash([]); ctx.lineDashOffset = 0;
-
+  bus(ctx, x, spin);
+  bus(ctx, x - span, spin);   // segundo bus para loop sin huecos
+}
+function bus(ctx, x, spin){
+  const H = ctx.canvas.height;
   ctx.save(); ctx.translate(x, 0);
   const bx=0, by=18, bw=210, bh=70, wy=by+bh+2;
   // sombra
@@ -98,10 +102,10 @@ async function makeBus(){
     workerScript: URL.createObjectURL(workerBlob) });
   const c = document.createElement('canvas'); c.width=W; c.height=H;
   const ctx = c.getContext('2d');
-  const frames = 30, span = W + 260;
+  const frames = 30, span = 760;           // 760 = 20 × (22+16) → dashes en loop perfecto
   for (let f=0; f<frames; f++){
-    const x = -230 + (f/frames)*span;      // recorre y vuelve a entrar (loop continuo)
-    scene(ctx, x, (f/frames)*Math.PI*6);
+    const x = -280 + (f/frames)*span;      // loop continuo con 2 buses
+    scene(ctx, x, (f/frames)*Math.PI*6, span);
     gif.addFrame(ctx, { copy:true, delay: 70 });
   }
   gif.on('finished', blob => {
