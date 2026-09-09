@@ -30,6 +30,9 @@ var IMG_BASE = 'https://mtricasfrias.github.io/Tablero_Setp_Comunicaciones/img/'
 var WA_NUMERO = '573144364606';
 var WA_TEXTO  = 'Hola, acabé de responder la encuesta de CULTURA SETP 🚌';
 
+/* Correo de la Ventanilla Única para PQRSD / situaciones del servicio. */
+var MAIL_CONTACTO = 'Ventanillaunica@transmusical.gov.co';
+
 /** El panel pide los datos aquí (GET). */
 function doGet(e) {
   return json_({
@@ -109,13 +112,22 @@ function esc_(s) {
   });
 }
 
+function waHumano_(n) {
+  var s = String(n).replace(/\D/g, '').replace(/^57/, '');
+  return s.length === 10 ? s.slice(0, 3) + ' ' + s.slice(3, 6) + ' ' + s.slice(6) : s;
+}
+
 function correoTexto_(nombre) {
   return 'Hola ' + nombre + ', gracias por asistir a la charla y responder la encuesta.\n\n' +
     '¿Qué es el SETP? El Sistema Estratégico de Transporte Público de Ibagué moderniza ' +
     'vías, paraderos, semáforos y buses para que moverte por la ciudad sea más seguro, ' +
     'cómodo e incluyente. Con tu opinión hacemos mejor ese trabajo.\n\n' +
     'Tu comportamiento mueve la ciudad.\n\n' +
-    '— Área de Comunicaciones · SETP Ibagué · Alcaldía de Ibagué';
+    'CANALES DE ATENCIÓN\n' +
+    (WA_NUMERO ? 'WhatsApp: ' + waHumano_(WA_NUMERO) + '\n' : '') +
+    (MAIL_CONTACTO ? 'Correo: ' + MAIL_CONTACTO + '\n' : '') +
+    'Para presentar una PQRSD o reportar una situación del servicio, escríbenos por cualquiera de estos canales.\n\n' +
+    '— Área de Comunicaciones · Sistema Estratégico de Transporte Público de Ibagué · Alcaldía de Ibagué';
 }
 
 function correoHtml_(nombre) {
@@ -154,12 +166,20 @@ function correoHtml_(nombre) {
         foto('correo-3.jpg', 'Buses del SETP') +
       '</tr></table>' +
       '<p style="margin:0 0 12px">Con tu opinión hacemos mejor ese trabajo.</p>' +
-      '<p style="margin:0 0 14px;color:#159BD6;font-weight:700;font-size:15px">Tu comportamiento mueve la ciudad.</p>' +
-      (WA_NUMERO ?
-        '<a href="https://wa.me/' + WA_NUMERO + '?text=' + encodeURIComponent(WA_TEXTO) + '" ' +
-        'style="display:inline-block;background:#25D366;color:#ffffff;text-decoration:none;font-weight:700;' +
-        'font-size:14px;padding:11px 18px;border-radius:10px">Escríbenos por WhatsApp</a>' : '') +
-      '<p style="margin:18px 0 0;font-size:12px;color:#5B6A88">Área de Comunicaciones · SETP Ibagué · Alcaldía de Ibagué</p>' +
+      '<p style="margin:0 0 16px;color:#159BD6;font-weight:700;font-size:15px">Tu comportamiento mueve la ciudad.</p>' +
+
+      '<div style="border-top:1px solid #E0E6F1;padding-top:14px">' +
+        '<p style="margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.06em;color:#5B6A88;text-transform:uppercase">Canales de atención</p>' +
+        (WA_NUMERO ?
+          '<a href="https://wa.me/' + WA_NUMERO + '?text=' + encodeURIComponent(WA_TEXTO) + '" ' +
+          'style="display:inline-block;background:#25D366;color:#ffffff;text-decoration:none;font-weight:700;' +
+          'font-size:13px;padding:10px 16px;border-radius:9px;margin-bottom:8px">WhatsApp: ' + waHumano_(WA_NUMERO) + '</a><br>' : '') +
+        (MAIL_CONTACTO ?
+          '<p style="margin:6px 0 0;font-size:13px">Correo: <a href="mailto:' + MAIL_CONTACTO + '" style="color:#0E6FA0">' + MAIL_CONTACTO + '</a></p>' : '') +
+        '<p style="margin:8px 0 0;font-size:12px;color:#5B6A88">Para presentar una PQRSD o reportar una situación del servicio, escríbenos por cualquiera de estos canales.</p>' +
+      '</div>' +
+
+      '<p style="margin:16px 0 0;font-size:12px;color:#5B6A88">Área de Comunicaciones · Sistema Estratégico de Transporte Público de Ibagué<br>Alcaldía de Ibagué</p>' +
     '</div>' +
   '</div>';
 }
