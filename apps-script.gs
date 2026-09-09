@@ -117,9 +117,9 @@ function correoTexto_(nombre) {
 function correoHtml_(nombre) {
   var n = esc_(nombre);
   var foto = function (archivo, alt) {
-    return '<td width="33%" style="padding:0 3px" valign="top">' +
+    return '<td width="50%" style="padding:0 3px" valign="top">' +
       '<img src="' + IMG_BASE + archivo + '" alt="' + alt + '" width="100%" ' +
-      'style="display:block;width:100%;height:auto;border-radius:8px;border:0;background:#E6F4FB;color:#5B6A88;font-size:10px"></td>';
+      'style="display:block;width:100%;height:auto;border-radius:8px;border:0;background:#E6F4FB"></td>';
   };
   return '' +
   '<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#0D1730;background:#ffffff">' +
@@ -136,13 +136,16 @@ function correoHtml_(nombre) {
       '</tr></table>' +
     '</td></tr></table>' +
 
+    // bus animado (GIF)
+    '<img src="' + IMG_BASE + 'bus.gif" alt="Buses del SETP" width="100%" ' +
+      'style="display:block;width:100%;height:auto;border-left:1px solid #E0E6F1;border-right:1px solid #E0E6F1;background:#EEF3FA">' +
+
     '<div style="border:1px solid #E0E6F1;border-top:0;border-radius:0 0 12px 12px;padding:20px;line-height:1.5;font-size:14px">' +
       '<p style="margin:0 0 12px">Hola <b>' + n + '</b>, gracias por asistir a la charla y responder la encuesta.</p>' +
       '<p style="margin:0 0 4px"><b>¿Qué es el SETP?</b></p>' +
       '<p style="margin:0 0 14px">El <b>Sistema Estratégico de Transporte Público de Ibagué</b> moderniza ' +
         'vías, paraderos, semáforos y buses para que moverte por la ciudad sea más seguro, cómodo e incluyente.</p>' +
       '<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 0 14px"><tr>' +
-        foto('correo-1.jpg', 'Obras del SETP') +
         foto('correo-2.jpg', 'Vías renovadas') +
         foto('correo-3.jpg', 'Buses del SETP') +
       '</tr></table>' +
