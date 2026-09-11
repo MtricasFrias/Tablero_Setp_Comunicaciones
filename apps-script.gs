@@ -103,7 +103,19 @@ function enviarGracias_(correo, nombre, cfg) {
       body: correoTexto_(primer),
       noReply: true
     });
-  } catch (e) { /* sin cuota / error: se ignora */ }
+  } catch (e) { Logger.log('enviarGracias_ error: ' + e + ' | correo=' + correo); }
+}
+
+/**
+ * Prueba manual: ejecuta esto desde el editor (▶) con tu propio correo
+ * y revisa "Ver registros" (Ver → Registros de ejecución) para ver
+ * la cuota restante y cualquier error real.
+ */
+function testCorreo() {
+  var cfg = getConfig_();
+  Logger.log('correoAuto=' + cfg.correoAuto + ' cuotaRestante=' + MailApp.getRemainingDailyQuota());
+  enviarGracias_('TU-CORREO-AQUI@gmail.com', 'Prueba', cfg);
+  Logger.log('enviado (o revisa error arriba)');
 }
 
 function esc_(s) {
